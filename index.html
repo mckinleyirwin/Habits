@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habit Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Habit Tracker</h1>
+      <p id="today-date"></p>
+    </header>
+
+    <nav>
+      <button class="nav-btn active" data-tab="today">Today</button>
+      <button class="nav-btn" data-tab="habits">Habits</button>
+      <button class="nav-btn" data-tab="stacks">Stacks</button>
+      <button class="nav-btn" data-tab="progress">Progress</button>
+    </nav>
+
+    <!-- TODAY TAB -->
+    <section id="tab-today" class="tab active">
+      <div class="section-header">
+        <h2>Today's Habits</h2>
+        <span id="today-progress-label">0 / 0 done</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div id="today-progress-bar"></div>
+      </div>
+
+      <div id="stacks-today"></div>
+      <div id="habits-today"></div>
+
+      <p id="empty-today" class="empty-msg" hidden>
+        No habits yet. Go to <strong>Habits</strong> to add some.
+      </p>
+    </section>
+
+    <!-- HABITS TAB -->
+    <section id="tab-habits" class="tab" hidden>
+      <div class="section-header">
+        <h2>My Habits</h2>
+        <button class="btn-primary" id="add-habit-btn">+ Add Habit</button>
+      </div>
+      <div id="habits-list"></div>
+      <p id="empty-habits" class="empty-msg" hidden>No habits yet. Add one above.</p>
+    </section>
+
+    <!-- STACKS TAB -->
+    <section id="tab-stacks" class="tab" hidden>
+      <div class="section-header">
+        <h2>Habit Stacks</h2>
+        <button class="btn-primary" id="add-stack-btn">+ Add Stack</button>
+      </div>
+      <p class="helper-text">
+        Habit stacking links habits together: <em>"After [HABIT A], I will [HABIT B]."</em>
+      </p>
+      <div id="stacks-list"></div>
+      <p id="empty-stacks" class="empty-msg" hidden>No stacks yet. Create one above.</p>
+    </section>
+
+    <!-- PROGRESS TAB -->
+    <section id="tab-progress" class="tab" hidden>
+      <h2>Progress</h2>
+      <div id="progress-grid"></div>
+      <p id="empty-progress" class="empty-msg" hidden>No habits to show progress for.</p>
+    </section>
+
+    <!-- HABIT MODAL -->
+    <div id="habit-modal" class="modal-overlay" hidden>
+      <div class="modal">
+        <h3 id="habit-modal-title">Add Habit</h3>
+        <form id="habit-form">
+          <input type="hidden" id="habit-id" />
+
+          <label>Habit Name *
+            <input type="text" id="habit-name" placeholder="e.g. Meditate" required />
+          </label>
+
+          <fieldset>
+            <legend>Cue (What triggers this habit?)</legend>
+            <label>Type
+              <select id="cue-type">
+                <option value="time">Time of day</option>
+                <option value="location">Location</option>
+                <option value="emotion">Emotional state</option>
+                <option value="action">After an action</option>
+                <option value="person">Around a person</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
+            <label>Description
+              <input type="text" id="cue-value" placeholder="e.g. 7:00 AM, after coffee, when stressed…" />
+            </label>
+          </fieldset>
+
+          <label>Routine / Behaviour
+            <textarea id="habit-routine" rows="2" placeholder="What exactly do you do?"></textarea>
+          </label>
+
+          <label>Reward
+            <input type="text" id="habit-reward" placeholder="e.g. Feel calm, enjoy a treat, check social media…" />
+          </label>
+
+          <label>Frequency
+            <select id="habit-frequency">
+              <option value="daily">Daily</option>
+              <option value="weekdays">Weekdays only</option>
+              <option value="weekends">Weekends only</option>
+            </select>
+          </label>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-ghost" id="cancel-habit-btn">Cancel</button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- STACK MODAL -->
+    <div id="stack-modal" class="modal-overlay" hidden>
+      <div class="modal">
+        <h3 id="stack-modal-title">Add Stack</h3>
+        <form id="stack-form">
+          <input type="hidden" id="stack-id" />
+
+          <label>Stack Name *
+            <input type="text" id="stack-name" placeholder="e.g. Morning Routine" required />
+          </label>
+
+          <p class="helper-text">Drag habits into the order you want to perform them.</p>
+
+          <div id="stack-available" class="stack-columns">
+            <div>
+              <h4>Available Habits</h4>
+              <ul id="stack-pool" class="drag-list"></ul>
+            </div>
+            <div>
+              <h4>Stack Order</h4>
+              <ul id="stack-order" class="drag-list droptarget"></ul>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-ghost" id="cancel-stack-btn">Cancel</button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- DELETE CONFIRM -->
+    <div id="confirm-modal" class="modal-overlay" hidden>
+      <div class="modal modal-sm">
+        <h3 id="confirm-title">Delete?</h3>
+        <p id="confirm-msg"></p>
+        <div class="modal-actions">
+          <button class="btn-ghost" id="confirm-cancel">Cancel</button>
+          <button class="btn-danger" id="confirm-ok">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
