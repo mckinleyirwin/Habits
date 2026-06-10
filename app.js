@@ -13,6 +13,8 @@ function fresh() { return { habits: [], stacks: [] }; }
 function save() { localStorage.setItem(DB_KEY, JSON.stringify(state)); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 function today() { return new Date().toISOString().slice(0, 10); }
+function showModal(id) { document.getElementById(id).classList.remove('modal-hidden'); }
+function hideModal(id) { document.getElementById(id).classList.add('modal-hidden'); }
 
 /* ─── Tab routing ───────────────────────────────── */
 const tabs = ['today', 'habits', 'stacks', 'progress'];
@@ -241,9 +243,9 @@ function openHabitModal(id) {
   document.getElementById('habit-routine').value  = h ? (h.routine || '') : '';
   document.getElementById('habit-reward').value   = h ? (h.reward || '') : '';
   document.getElementById('habit-frequency').value= h ? (h.frequency || 'daily') : 'daily';
-  modal.hidden = false;
+  showModal('habit-modal');
 }
-function closeHabitModal() { document.getElementById('habit-modal').hidden = true; }
+function closeHabitModal() { hideModal('habit-modal'); }
 
 document.getElementById('habit-form').addEventListener('submit', e => {
   e.preventDefault();
@@ -332,9 +334,9 @@ function openStackModal(id) {
   buildDragList(document.getElementById('stack-pool'),  poolHabits);
   buildDragList(document.getElementById('stack-order'), orderedHabits);
 
-  document.getElementById('stack-modal').hidden = false;
+  showModal('stack-modal');
 }
-function closeStackModal() { document.getElementById('stack-modal').hidden = true; }
+function closeStackModal() { hideModal('stack-modal'); }
 
 function buildDragList(ul, habits) {
   ul.innerHTML = '';
@@ -450,20 +452,20 @@ function confirmDelete(title, msg, cb) {
   document.getElementById('confirm-title').textContent = title;
   document.getElementById('confirm-msg').textContent   = msg;
   confirmCb = cb;
-  document.getElementById('confirm-modal').hidden = false;
+  showModal('confirm-modal');
 }
 document.getElementById('confirm-cancel').addEventListener('click', () => {
-  document.getElementById('confirm-modal').hidden = true;
+  hideModal('confirm-modal');
 });
 document.getElementById('confirm-ok').addEventListener('click', () => {
-  document.getElementById('confirm-modal').hidden = true;
+  hideModal('confirm-modal');
   if (confirmCb) { confirmCb(); confirmCb = null; }
 });
 
 /* Close modals on overlay click */
 ['habit-modal', 'stack-modal', 'confirm-modal'].forEach(id => {
   document.getElementById(id).addEventListener('click', e => {
-    if (e.target.id === id) document.getElementById(id).hidden = true;
+    if (e.target.id === id) hideModal(id);
   });
 });
 

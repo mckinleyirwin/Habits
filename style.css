@@ -1,6 +1,6 @@
 /* ─── Reset & Base ─────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-[hidden] { display: none !important; }
+[hidden], .modal-hidden { display: none !important; }
 
 :root {
   --green:   #22c55e;
