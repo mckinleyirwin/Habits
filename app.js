@@ -16,6 +16,46 @@ function today() { return new Date().toISOString().slice(0, 10); }
 function showModal(id) { document.getElementById(id).classList.remove('modal-hidden'); }
 function hideModal(id) { document.getElementById(id).classList.add('modal-hidden'); }
 
+/* ─── Date navigation ───────────────────────────── */
+const MIN_DATE = '2026-06-01';
+let selectedDate = today();
+
+function dateToDisplay(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+}
+
+function shiftDate(dateStr, days) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d + days);
+  return dt.toISOString().slice(0, 10);
+}
+
+function updateDateUI() {
+  document.getElementById('today-date').textContent = dateToDisplay(selectedDate);
+  const isToday = selectedDate === today();
+  const isMin   = selectedDate <= MIN_DATE;
+  document.getElementById('next-day-btn').disabled = isToday;
+  document.getElementById('prev-day-btn').disabled = isMin;
+  document.getElementById('today-heading').textContent =
+    isToday ? "Today's Habits" : dateToDisplay(selectedDate).split(',').slice(0,1).join('') + "'s Habits";
+}
+
+document.getElementById('prev-day-btn').addEventListener('click', () => {
+  if (selectedDate <= MIN_DATE) return;
+  selectedDate = shiftDate(selectedDate, -1);
+  updateDateUI();
+  renderToday();
+});
+document.getElementById('next-day-btn').addEventListener('click', () => {
+  if (selectedDate >= today()) return;
+  selectedDate = shiftDate(selectedDate, 1);
+  updateDateUI();
+  renderToday();
+});
+
 /* ─── Tab routing ───────────────────────────────── */
 const tabs = ['today', 'habits', 'stacks', 'progress'];
 
@@ -39,34 +79,28 @@ function renderTab(t) {
   if (t === 'progress') renderProgress();
 }
 
-/* ─── Date display ──────────────────────────────── */
-const dateEl = document.getElementById('today-date');
-dateEl.textContent = new Date().toLocaleDateString('en-US', {
-  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-});
-
 /* ─── TODAY ─────────────────────────────────────── */
 function isScheduledToday(habit) {
-  const day = new Date().getDay(); // 0=Sun
+  const [y, m, d] = selectedDate.split('-').map(Number);
+  const day = new Date(y, m - 1, d).getDay();
   if (habit.frequency === 'weekdays') return day >= 1 && day <= 5;
   if (habit.frequency === 'weekends') return day === 0 || day === 6;
   return true;
 }
 
 function isDone(habit) {
-  return !!(habit.completions && habit.completions[today()]);
+  return !!(habit.completions && habit.completions[selectedDate]);
 }
 
 function toggleDone(id) {
   const h = state.habits.find(x => x.id === id);
   if (!h) return;
-  const t = today();
   if (!h.completions) h.completions = {};
-  if (h.completions[t]) {
-    delete h.completions[t];
+  if (h.completions[selectedDate]) {
+    delete h.completions[selectedDate];
     h.streak = calcStreak(h);
   } else {
-    h.completions[t] = true;
+    h.completions[selectedDate] = true;
     h.streak = calcStreak(h);
     if (h.streak > (h.longestStreak || 0)) h.longestStreak = h.streak;
   }
@@ -477,4 +511,5 @@ function esc(s) {
 }
 
 /* ─── Init ──────────────────────────────────────── */
+updateDateUI();
 renderToday();

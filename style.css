@@ -40,11 +40,35 @@ header h1 {
   font-weight: 700;
   color: var(--green-d);
 }
+#date-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 6px;
+}
 #today-date {
   font-size: .85rem;
   color: var(--muted);
-  margin-top: 4px;
+  min-width: 220px;
+  text-align: center;
 }
+.date-nav-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+.date-nav-btn:hover:not(:disabled) { background: var(--green-l); }
+.date-nav-btn:disabled { opacity: .3; cursor: default; }
 
 /* ─── Nav ───────────────────────────────────────── */
 nav {
